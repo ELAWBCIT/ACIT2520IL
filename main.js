@@ -17,19 +17,20 @@ const AdmZip = require("adm-zip");
 const zip = new AdmZip(zipFilePath);
 const fs = require('fs');
 
+let index = 0;
+
 // fs.createReadStream(zipFilePath).pipe(zip.extractAllTo(pathUnzipped, true));
 IOhandler.unzip(zipFilePath, pathUnzipped)
 .then(() => console.log('Extraction operation complete'))
 .then(() => IOhandler.readDir(pathUnzipped))
 .then((filePaths) => {
     console.log(filePaths);
-    filePaths.forEach(filePath => {
-        index = 0
-        for (let i = 0; i < filePaths.length; i++) {
-            index += [i];
-            IOhandler.grayScale(filePath, pathProcessed + "/blah" + index + ".png")
-        }
-    })
+    const promises = filePaths.map((filePath) => {
+        index++;
+        const processedFilePath = `${pathProcessed}/${index}.png`;
+        return IOhandler.grayScale(filePath, processedFilePath); 
+    });
+    return Promise.all(promises);
 })
 .then(() => console.log('Grayscale Complete'))
 .catch(error => console.log(error))

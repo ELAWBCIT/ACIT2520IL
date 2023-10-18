@@ -33,3 +33,11 @@ IOhandler.readDir(pathUnzipped)
 .catch((err) => {
     console.log('Filepaths Error: ', err);
 })
+
+IOhandler.grayScale(pathUnzipped, pathProcessed)
+.then(() => {
+    console.log('Grayscale Complete');
+})
+.catch((err) => {
+    console.log('Grayscale Error: ', err); 
+})

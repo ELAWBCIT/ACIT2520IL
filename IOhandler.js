@@ -35,7 +35,7 @@ const unzip = (pathIn, pathOut) => {
       // ending the promise if successful
       resolve(); 
     }
-    // error detection 
+    // error detection
     catch (error) {
       reject(error);
     }
@@ -85,8 +85,37 @@ const readDir = (dir) => {
  * @param {string} pathProcessed
  * @return {promise}
  */
-const grayScale = (pathIn, pathOut) => {};
-//
+const grayScale = (pathIn, pathOut) => {
+  return new Promise((resolve, reject) => {
+    colored = fs.createReadStream(pathIn)
+    colored.pipe(new PNG({})).on('parsed', function() {
+      for (var y = 0; y < this.height; y++) {
+        for (var x = 0; x < this.width; x++) {
+          var idx = (this.width * y + x) << 2;
+          
+          const grey = (this.data[idx] + this.data[idx + 1] + this.data[idx + 2]) / 3;
+
+          this.data[idx] = grey;
+          this.data[idx + 1] = grey;
+          this.data[idx + 2] = grey;
+          this.data[idx + 3] = this.data[idx + 3];
+        }
+      }
+      const grayWriter = fs.createWriteStream(
+        path.join(pathOut, path.basename(pathIn))
+      );
+      this.pack().pipe(grayWriter);
+      grayWrite.on("finished", () => {
+        resolve(path.basename(pathIn) + "grayscaled");
+      });
+    });
+
+    colored.on("error", (err) => {
+      reject('Conversion failure: ' + err);
+    });
+  });
+};
+
 
 module.exports = {
   unzip,

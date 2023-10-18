@@ -19,25 +19,17 @@ const fs = require('fs');
 
 // fs.createReadStream(zipFilePath).pipe(zip.extractAllTo(pathUnzipped, true));
 IOhandler.unzip(zipFilePath, pathUnzipped)
-.then(() => {
-    console.log('Extraction operation complete');
-})
-.catch((err) => {
-    console.log('Extraction Error: ', err);
-})
-
-IOhandler.readDir(pathUnzipped)
+.then(() => console.log('Extraction operation complete'))
+.then(() => IOhandler.readDir(pathUnzipped))
 .then((filePaths) => {
     console.log(filePaths);
+    filePaths.forEach(filePath => {
+        index = 0
+        for (let i = 0; i < filePaths.length; i++) {
+            index += [i];
+            IOhandler.grayScale(filePath, pathProcessed + "/blah" + index + ".png")
+        }
+    })
 })
-.catch((err) => {
-    console.log('Filepaths Error: ', err);
-})
-
-IOhandler.grayScale(pathUnzipped, pathProcessed)
-.then(() => {
-    console.log('Grayscale Complete');
-})
-.catch((err) => {
-    console.log('Grayscale Error: ', err); 
-})
+.then(() => console.log('Grayscale Complete'))
+.catch(error => console.log(error))
